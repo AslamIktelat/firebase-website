@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Sing in</title>
+  <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.18.0/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.18.0/firebase-auth.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+
+     
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/small-business.css" rel="stylesheet">
+
+</head>
+<style>
+input
+{
+margin:20px 0px 20px;
+	border-radius: 5px;
+}
+</style>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">Plastic free</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="https://finalp-e1b6b.web.app/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://finalp-e1b6b.web.app/products.html">Our products</a>
+          </li>
+		   
+          
+          <li class="nav-item">
+            <a class="nav-link" href="https://finalp-e1b6b.web.app/man/ManPage.html">Manager</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <   <!-- Page Content -->
+  <div class="container">
+
+    <!-- Heading Row -->
+    <div class="row align-items-center my-5">
+      <div class="col-lg-7">
+       
+      </div>
+      <!-- /.col-lg-8 -->
+      <div class="col-lg-5">
+       
+      </div>
+      <!-- /.col-md-4 -->
+    </div>
+    <!-- /.row -->
+
+    <!-- Call to Action Well -->
+    <div class=" col-md-4 mb-5 text-center">
+	<div class="card h-100">
+      <div class="card-body">
+       <form>
+      <input class="form-control" type="text" id="email" name="email" placeholder="Email">
+      <input class="form-control" type="password" id="password"  name="password" placeholder="Password">
+	 
+        <input class="form-control btn btn-primary btn-sm" type="submit"  value="Log In" id="sin" >
+         
+	   </form>
+      </div>
+    </div>
+</div>
+    <!-- Content Row -->
+    <div class="row">
+      
+
+    </div>
+    <!-- /.row -->
+
+  </div>
+  <!-- /.container -->
+  <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+   
+	<!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+      $( "#sin" ).click(go);
+	  
+	  user = firebase.auth().currentUser;
+	  if(user!=null)
+	   {
+	   window.location.href ="https://finalp-e1b6b.web.app/man/ManPage.html" 
+	   }
+	   
+	  firebase.auth().onAuthStateChanged(function(user) {
+       if (user!=null) {
+	    window.location.href ="https://finalp-e1b6b.web.app/man/ManPage.html";
+	   }
+	    
+	   });
+       
+		
+      });
+	  function go()
+	  {
+	     var email=$("#email").val();
+		 var password=$("#password").val();
+		 console.log(email);
+		 console.log(password);
+		 window.location.href = "https://finalp-e1b6b.web.app/man/singin.html?email="+ email+"/password="+ password;
+		 return false;
+	   }
+    </script>
+
+  <!-- Footer -->
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; Aslam Iktelat final project Website 2020</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+  
+
+</body>
+
+</html>

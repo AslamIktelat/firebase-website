@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Orders</title>
+   <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.18.0/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.18.0/firebase-auth.js"></script>
+	<script defer="" src="/__/firebase/7.14.4/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    
+ 
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/simple-sidebar.css" rel="stylesheet">
+
+</head>
+<style>
+
+	table
+	{
+	margin:20px 0px 20px;
+	border-radius: 5px;
+	}
+	table td {
+	margin:5px;
+    word-break: break-all;
+}
+table tr{ 
+margin:5px;
+border-radius: 5px;
+}
+
+</style>
+<body style="display:none;">
+
+  <div class="d-flex" id="wrapper">
+
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+       <div class="sidebar-heading" id="WelcomeDiv"></div>
+      <div class="list-group list-group-flush">
+        <a href="https://finalp-e1b6b.web.app/man/ManPage.html" class="list-group-item list-group-item-action bg-light">Dashboard</a>
+		
+       
+		
+       
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="https://finalp-e1b6b.web.app">Home</a>
+            </li>
+			<li class="nav-item active">
+              <a class="dropdown-item" href="https://finalp-e1b6b.web.app/man/singout.html">Sing out</a>
+            </li>
+            
+          </ul>
+        </div>
+      </nav>
+
+      <div class="container-fluid">
+	
+	   
+	  <div class="row">
+	 
+	<div class="col-md-4">
+        <table style=" width:100%; display: flex; flex-direction:column; margin:20px 0px 20px; " id="output">   
+        </table>
+		</div>
+		
+		
+		<div class="col-md-8">
+        <table style=" width:100%; display: flex; flex-direction:column; margin:20px 0px 20px; " id="moreDit">   
+        </table>
+		</div>
+		</div>
+      </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Menu Toggle Script -->
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    $("#menu-toggle").click(function(e) {e.preventDefault(); $("#wrapper").toggleClass("toggled"); });
+     
+	
+        firebase.auth().onAuthStateChanged(function(user) {
+       if (user==null) {
+	   window.location.href ="https://finalp-e1b6b.web.app/man/index.html"
+	   }
+	    else
+	   {
+	    $('#WelcomeDiv').text("Hello "+user.displayName);
+		$('body').show();
+	   }
+	   });
+	   //if we here then there is a user who singed in
+	    const db = firebase.firestore();
+       display(db);//call the function
+   });   
+   
+   
+   function display(db)//function display
+	  {
+	  	  
+	    $('#output').empty();//output is the table - we call the function empty so we dont add new info to old info
+	     db.collection("orders").get().then(function(querySnapshot) {
+		   if(querySnapshot.size==0)//if the database is empty
+		   {
+		       $('#output').append("<h2>Your list is empty...no orders</h2>");
+			    
+		   }
+		   else{
+		   
+            querySnapshot.forEach(function(doc) {                                       
+			
+			 $('#output').append('<tr class="border_bottom" id="Tr" style="background-color:#00fbff; display:flex;justify-content:space-between;" ><td><p>Name:'+doc.data().name+'</p><p>Address:'+doc.data().address+'</p><p>PhoneNumber:'+doc.data().phone+'</p><p>Note: '+doc.data().note+'</p><p> <button class="delete btn btn-primary" id="delete" onclick="DeleteOrd(this.id)">Sell</button></p><p> <button class="show btn btn-primary" id="delete" onclick="ShowOrd(this.id)">Show the order</button></p></td></tr>');
+                $( ".delete.btn.btn-primary" ).each(function(){ $(this).attr("class","btn btn-primary"); $(this).attr("id",doc.id);}); 	
+                $( ".show.btn.btn-primary" ).each(function(){ $(this).attr("class","btn btn-primary"); $(this).attr("id",doc.data().order);});				
+
+            });
+			}//End of else
+        });
+		
+	  }//End of display
+
+function ShowOrd(order)
+{
+$('#moreDit').empty();
+var str=order.split(" "); 
+var orders = new Map();
+for(var i=0;i<str.length;i=i+2)
+{
+
+orders.set(str[i],str[i+1]);
+
+}
+
+orders.forEach(function(value,key){
+ const db = firebase.firestore();
+ db.collection("products").doc(key).get().then(function(doc) { 
+  var name;  var img;
+  name=doc.data().name; 
+  img=doc.data().img; 
+ $('#moreDit').append(' <div class="col-md-4 mb-5"> <div class="card h-100"><div class="card-body"><h2 class="card-title">'+name+'</h2><p class="card-text">Uints for the order:'+value+'</p><p class="card-text">Amount in warehouse:'+doc.data().amount+'</p><p class="card-text"><img src='+img+' height="250px" width="250px"/></p></div> </div></div>');
+  }).catch(function(err){ alert("Cannot show the order,you deleted a product after a customer has order it"); });
+
+
+});
+
+
+
+}
+
+
+
+
+	  function DeleteOrd(id)
+	     {
+		 
+		  var dbd=firebase.firestore();
+		 dbd.collection("orders").doc(id).delete().then(function() {
+    console.log("Document successfully deleted!"); 
+	display(dbd);
+     }).catch(function(error) {
+    console.error("Error removing document: ", error);
+    });
+
+	  }//End of DeletePro
+      
+   
+  </script>
+
+</body>
+
+</html>

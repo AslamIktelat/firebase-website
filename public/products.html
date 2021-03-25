@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+   <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="css/small-business.css" rel="stylesheet">
+  <title>Our products</title>
+
+   <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.18.0/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.18.0/firebase-auth.js"></script>
+	<script defer="" src="/__/firebase/7.14.4/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  
+
+   
+
+
+
+
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="https://finalp-e1b6b.web.app/">Plastic free</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+			<button  class="btn btn-primary btn-sm" id="CheckoutB" onclick="CheckoutButton()">Checkout</button>   
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="man/index.html">Manager</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container">
+
+    <!-- Content Row -->
+    <div class="row" id="products">
+	
+	 <!-- this what we have in each row-->
+	 <!-- /.col-md-4 
+	 
+      <div class="col-md-4 mb-5">
+        <div class="card h-100">
+          <div class="card-body">
+            <h2 class="card-title" id="1"></h2>
+            <p class="card-text" id="1"></p>
+			<p class="card-text"><img id="1" height="100px" width="100px"/></p>
+          </div>
+          <div class="card-footer">
+		    <input type="text" id="1"  value='1'>
+            <button id="1" onclick="myfuc(this.id)" class="btn btn-primary btn-sm">Add to cart</button>
+          </div>
+        </div>
+      </div>
+	   
+	 end of div -->
+     
+     
+    
+  
+
+    </div> 
+	
+	<div class="row" id="Checkout" style="display:none">  <!---->
+  <div class="col-md-6 mb-5">                                   
+        <div class="card h-100">
+          <div class="card-body" style="overflow:hidden;">
+            <h2 class="card-title">Please enter your details to continue</h2>
+            <p class="card-text" ><input type="text" id="name" placeholder="Name*" autofocus  /></p>
+			<p class="card-text"><input type="tel" id="phonenumber"  placeholder="Phonenumber*"   /></p>
+			<p class="card-text"><input type="text" id="address" placeholder="Address*"   /></p>
+			<p class="card-text"><textarea rows="4" cols="40" id="notes" placeholder="Notes"></textarea></p>
+          </div>
+          <div class="card-footer" style="text-align: center;">
+            <button class="btn btn-primary btn-sm" onclick="ReadDetails()">Next</button>
+          </div>
+        </div>
+      </div>
+</div>
+ <div class="row" id="Checkout2" style="display:none">
+ 
+
+ </div>
+  <div class="row" id="Checkout3" style="display:none">
+   <div class="col-md-6 mb-5">                                   
+        <div class="card h-100">
+          <div class="card-body">
+            <h2 class="card-title">Thank you</h2>
+            <p class="card-text" >Your order successfully added to our system</p>
+          </div>
+          <div class="card-footer" style="text-align: center;">
+		  <a class="nav-link" href="products.html">Our products</a>
+            <a class="nav-link" href="index.html">Home</a>
+          </div>
+        </div>
+      </div>
+
+ </div>
+  </div>
+  <!-- /.container -->
+
+  <!-- Footer -->
+  <footer class="py-5 bg-dark" style=" bottom:0;">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; Aslam Iktelat final project Website 2020</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+<script>
+let orders = new Map();
+ let Details=[];
+
+ document.addEventListener('DOMContentLoaded', function(){
+       
+	   
+	   /*Display the data-products*/
+	       const db = firebase.firestore();
+          db.collection("products").get().then(function(querySnapshot) {
+		   if(querySnapshot.size==0)//if the database is empty
+		   {
+		       $('#products').append("<h2>We Dont have products to show right now</h2>");
+		   }
+		   else
+		   {
+		   
+		    querySnapshot.forEach(function(doc) {  
+			      if(doc.data().amount>0)
+					{
+					 
+                    $('#products').append(' <div class="col-md-4 mb-5"> <div class="card h-100"><div class="card-body"><h2 class="card-title" id='+doc.id+'></h2><p class="price card-text" id='+doc.id+'></p><p class="dis card-text" id='+doc.id+'></p><p class="card-text"><img id='+doc.id+' height="250px" width="250px"/></p></div> <div class="card-footer"> Uints:<input class="units"  type="text" size="4" maxlength="4" id='+doc.id+'  value="1"/><button id='+doc.id+' style="margin:5px;" onclick="AddToCart(this.id)" class="btn btn-primary btn-sm">Add to cart</button></div></div></div>');
+					$('h2#'+doc.id).text(doc.data().name);
+					$('.dis#'+doc.id).text(doc.data().discrption);
+					$('.price#'+doc.id).text("Price:"+doc.data().price+"$");
+					$('img#'+doc.id).attr("src",doc.data().img);
+					}
+			});
+		   }
+		  
+		  
+		  });
+		  
+		  
+		
+
+ 
+ });
+ 
+ 
+ //add the product id and how many the customer want to buy
+ //to map,orders id=key units=value
+  function AddToCart(id)
+ {
+     var units;
+	 var TypeInputUnits;
+	 var unitsBool=true;
+   $('.units').each(function(){var v=$(this).attr('id'); if(v==id) { TypeInputUnits=$(this); units=$(this).val();}});
+          if(units.length<1){alert("Units is empty"); unitsBool=false;}// amount is empty
+		  if(!Number.isInteger(+units)){ alert("Units is only numbers no chars"); unitsBool=false;}//amount not int
+		  if(units<0){ alert("Units canot be negative number"); unitsBool=false;}//amount -
+		
+	if(unitsBool)//add to cart (to map)
+      {
+	   if(orders.has(id)==false)//if its the first time we add the product to the map
+         {
+		    orders.set(id,units);
+		 }	 
+		else
+           {
+		   //add the old units value to the new units value and add to the map -after deleting the old node
+		      var Preunits=orders.get(id);
+			  units= parseInt(units)+ parseInt(Preunits);
+			  orders.delete(id);
+			  orders.set(id,units);
+           }
+		  
+	  }	
+ }
+ 
+ 
+ //get the customer data , name phone....
+ //add it to array Details
+ function ReadDetails()
+ {
+
+ var telP=$('#phonenumber').val();
+ var telPBool=true;
+ 
+ if(telP.length!=10) telPBool=false;
+ else
+ {
+ if(telP.charAt(0)!='0')telPBool=false;
+ if(telP.charAt(1)!='5')telPBool=false;
+ for(i=2;i<10;i++)
+ if(Number.isInteger(+telP.charAt(i))==false)telPBool=false;
+ }
+ if(($('#name').val()!="")&& $('#address').val()!=""  && telPBool )
+ {
+ Details.push($('#name').val(),$('#phonenumber').val(),$('#address').val(),$('#notes').val());
+  $('#Checkout').hide();
+  $('#CheckoutB').hide();
+	$('#Checkout2').show();
+	displayOrder();
+ }
+ 
+ if(telPBool==false)
+    alert("Phonenumber start with 05 and contain only 10 digits");
+ if(($('#name').val())=="")
+    alert("Name is required");
+if(($('#address').val())=="")
+    alert("Address is required");
+	
+	
+ }
+ 
+ //after we have the customer data
+ //we display what he/she ordered from the map orders
+ function displayOrder()
+ {
+if(orders.size==0) 
+{
+alert("Your orders list is empty ...Add products to cart");
+ window.location.href ="https://finalp-e1b6b.web.app/products.html"
+}
+$('#Checkout2').append(' <div class="col-md-4 mb-5"> <div class="card h-100"><div class="card-body"><h2 class="card-title">Hello '+Details[0]+'</h2><p class="card-text" id="NumPro" >empty</p><p class="card-text" id="TotalPrice" >empty</p> </div><div class="card-footer" style="text-align: center;"><button type="button" onclick="cancel()" class="btn btn-danger btn-sm">Cancel</button><button  onclick="Order()" class="btn btn-primary btn-sm">Order</button></div></div></div>');
+ let numPro=0;
+ let totalPrice=0;
+ let ToPr=0;
+ orders.forEach(function(value,key){
+ numPro=parseInt(value)+numPro;
+ const db = firebase.firestore();
+ db.collection("products").doc(key).get().then(function(doc) { 
+  var name;  var img; var p;
+ name=doc.data().name; 
+ img=doc.data().img; 
+ p=doc.data().price;
+ console.log("P:"+p);
+ console.log("(parseInt(value)*parseInt(p)):"+(parseInt(value)*parseInt(p)));
+ totalPrice=parseInt(totalPrice)+(parseInt(value)*parseInt(p));
+ $('#TotalPrice').text("Total price "+totalPrice+"$");
+ console.log("totalPrice:"+totalPrice);
+ $('#Checkout2').append(' <div class="col-md-4 mb-5"> <div class="card h-100"><div class="card-body"><h2 class="card-title">'+name+'</h2><p class="card-text">Uints:'+value+'</p><p class="card-text"><img src='+img+' height="100px" width="100px"/></p></div> </div></div>');
+  });
+ });
+ $('#NumPro').text("In your cart "+numPro+" products");
+ 
+ 
+ }
+ //Add the order to the database
+ function Order()
+ {
+ var ordersString="";
+ orders.forEach(function(value,key){
+ ordersString=ordersString+key+" "+value+" ";
+ });
+ ordersString=ordersString.substring(0,ordersString.length-1); //delete the last space
+ 
+ const db = firebase.firestore();
+ db.collection("orders").add({
+                    name: Details[0],
+					phone: Details[1],
+                    address:Details[2],
+					note:Details[3],
+					order:ordersString
+                }).then(function(docRef) { $('#Checkout2').hide(); $('#Checkout3').show();});
+	
+ }
+ //cancel and return to products page
+ function cancel()
+ {
+ window.location.href ="https://finalp-e1b6b.web.app/products.html"
+ }
+ 
+ function CheckoutButton()
+ {
+    $('#products').hide();
+	$('#Checkout').show();
+ }
+ 
+
+</script>
+</html>

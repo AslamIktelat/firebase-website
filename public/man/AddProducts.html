@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Add products</title>
+   <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.18.0/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.18.0/firebase-auth.js"></script>
+	<script defer="" src="/__/firebase/7.14.4/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  
+ 
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/simple-sidebar.css" rel="stylesheet">
+
+</head>
+<style>
+
+form {
+      background: powderblue;
+	  padding:15px;
+      border-radius: 5px;
+	  margin:20px 0px 20px;
+	}
+	table
+	{
+	margin:20px 0px 20px;
+	border-radius: 5px;
+	}
+	table td {
+   margin:5px;
+    word-break: break-all;
+}
+table tr{ 
+margin:5px;
+border-radius: 5px;
+}
+#uploader
+{
+-webkit-appearance:none;
+appearance:none;
+
+}
+</style>
+<body style="display:none;">
+
+  <div class="d-flex" id="wrapper">
+
+    <!-- Sidebar  -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+      <div class="sidebar-heading" id="WelcomeDiv"> </div>
+      <div class="list-group list-group-flush">
+        <a href="https://finalp-e1b6b.web.app/man/ManPage.html" class="list-group-item list-group-item-action bg-light">Dashboard</a>
+		 <a href="https://finalp-e1b6b.web.app/man/ShowProducts.html" class="list-group-item list-group-item-action bg-light">Show all the products</a>
+         <a href="https://finalp-e1b6b.web.app/man/UPdateProducts.html" class="list-group-item list-group-item-action bg-light">Update product</a>
+		
+       
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="https://finalp-e1b6b.web.app/">Home</a>
+			 
+            </li>
+			<li class="nav-item active">
+              <a class="dropdown-item" href="https://finalp-e1b6b.web.app/man/singout.html">Sing out</a>
+            </li>
+            
+          </ul>
+        </div>
+      </nav>
+
+      <div class="container-fluid">
+	  <div class="row">
+	  
+	  <div class="col-2"> 
+	  
+	  </div>
+   <div class="col-md-auto"> 
+   <form id="ffrom">
+   <div class="form-group" id="TaskDiv">
+   <label for="task">Add new product:</label>
+   <input type="text" id="name" class="form-control" placeholder="Name*" autofocus >
+    <input type="text" id="amount" class="form-control" placeholder="Amount only numbers*"  >
+	 <input type="text" id="price" class="form-control" placeholder="price only numbers*"  >
+   <textarea rows="4" cols="50" id="discrption" class="form-control" form="ffrom" placeholder="Discrption..."></textarea>
+   
+   </div>
+   <div class="form-groub"  style=" display: flex; justify-content:flex-end; " id="PicDiv">
+    <progress value="0" max="100" id="uploader" class="form-control">0%</progress>
+   <input type="file" value="upload" id="fileButton" class="form-control" accept="image/png, image/jpeg"/>
+   </div>
+    <div  class="form-groub"  style=" display: flex; justify-content:flex-end;">
+   <button  type="submit" id="submit-btn" class="btn btn-primary" style="padding:5px; margin:5px 5px;">Add</button>
+   </div>
+   
+   </form>
+   </div>
+   <div class="col-md-auto" > 
+	  <p  style=" margin:20px 0px 20px; color:red; display:none;" id="errorname1" >Name is empty...</p>
+   <p  style="margin:20px 0px 20px; color:red; display:none;" id="errorname2" >Amount is empty...</p>
+   <p  style="margin:20px 0px 20px; color:red; display:none;" id="errorname22" >Enter only positive numbers in amount...</p>
+   <p  style="margin:20px 0px 20px; color:red; display:none;" id="errorname3" >Discrption is empty...</p>
+   <p  style="margin:20px 0px 20px; color:red; display:none;" id="errorname4" >Choose photo...</p>
+   <p  style="margin:20px 0px 20px; color:red; display:none;" id="errorname5" >Price is empty...</p>
+   <p  style="margin:20px 0px 20px; color:red; display:none;" id="errorname52" >Enter only positive numbers in price...</p>
+ 
+	  </div>
+   <div class="col-md-auto"> 
+  <table style=" width:100%; display: flex; flex-direction:column;" id="output"> <!-- show after the add-->
+  </table>
+ 
+   </div>
+  </div>
+	  
+      </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Menu Toggle Script -->
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+   $('#AddP-btn').html("Add photo");
+    $("#menu-toggle").click(function(e) {e.preventDefault(); $("#wrapper").toggleClass("toggled"); });
+	
+	 firebase.auth().onAuthStateChanged(function(user) {
+       if (user==null) {
+	   window.location.href ="https://finalp-e1b6b.web.app/man/index.html"
+	   }
+	    else
+	   {
+	    $('#WelcomeDiv').text("Hello "+user.displayName);
+        $('body').show();		
+	   }
+	   });
+	   let file=null;
+	   let filename=null;
+	   let idPhotoname=null;
+	    const db = firebase.firestore();//if we here then there is a user who singed in
+		//listener to file button // photo button
+		fileButton.addEventListener('change',function(e){ 
+		file=e.target.files[0];
+		 db.collection("photoname").get().then(function(querySnapshot) 
+			 {
+			 
+            querySnapshot.forEach(function(doc) {  idPhotoname=doc.id; filename=doc.data().name; });
+			
+			 });
+		
+		
+		
+		});//get file
+			
+			
+			 
+		 $('#submit-btn').click(function(){
+		 var NB=true;
+		 var AB=true;
+		 var ANB=true;
+		 var DB=true;
+		 var PE=true;
+		 var PINT=true;
+		
+		$('#errorname22').hide();
+		$('#errorname1').hide();
+		$('#errorname2').hide();
+		$('#errorname3').hide();
+		$('#errorname4').hide();
+		$('#errorname5').hide();
+		$('#errorname52').hide();
+           var name = $('#name').val();
+           var amount = $('#amount').val();
+		   var price = $('#price').val();
+		   amount=parseInt(amount);//convert amount from text to int
+		   price=parseInt(price);
+           var discrption=$('#discrption').val();
+		   var uploader=document.getElementById('uploader');
+		   var fileButton=document.getElementById('fileButton');
+           
+           if(name.length<1){ NB=false; }// name is empty
+		   if(amount.length<1){ AB=false; }// amount is empty
+		   if(!Number.isInteger(+amount)){ANB=false;}
+		   else
+		   {
+		      if(amount<0){ANB=false;}
+		   }
+		   
+		   if(price.length<1){ PE=false; }// price is empty
+		   if(!Number.isInteger(+price)){PINT=false;}
+		   else
+		   {
+		      if(price<0){PINT=false;}
+		   }
+		   
+		   if(discrption.length<1){ DB=false; }// discrption is empty
+		  
+              var imgurl=0;
+			           
+			
+		  if(NB && AB && DB && ANB && (file!=null) && PINT && PE)
+		   {  
+                  var uploader;
+				  var fileButton;
+				  var storgeRef;
+				  var task;
+           
+			  uploader=document.getElementById('uploader');
+              fileButton=document.getElementById('fileButton');
+			   
+			  
+			
+                   storgeRef=firebase.storage().ref('photos/'+filename); //folder: photos
+              task=storgeRef.put(file);
+			      //update progress bar
+			task.on('state_changed',
+			function progress(snapshot)
+			{
+			
+			    var percentage=100*(snapshot.bytesTransferred/snapshot.totalBytes);
+				uploader.value=percentage;
+				console.log("percentage:"+percentage);
+			},
+			function error(err)
+			{
+			 
+			 console.log("IPLAOD ERROR "+err);
+			},
+			function complete()
+			{
+			    //update photoname
+				var filenameplus=filename+1;
+			 db.collection("photoname").doc(idPhotoname).update({"name":filenameplus});
+			 
+			   var storageRef = firebase.storage().ref();
+              var imgurl=0;
+                storageRef.child('photos/'+filename).getDownloadURL().then(function(url) {
+
+				imgurl=url
+				
+				 db.collection("products").add({
+                    name: name,
+                    amount:amount,
+					discrption:discrption,
+					img:imgurl,
+					price:price
+                }) .then(function(docRef) {
+				
+				
+                    console.log("Document successfully written!");
+					if(amount==0)
+					{
+					
+					//src="test"
+					
+                    $('#output').append('<tr class="border_bottom" id="Tr" style=" background-color:#ff6666; display:flex;justify-content:space-between;" ><td><p>Successfully added to products</p><p>Name:'+name+'</p><p>Amount:'+amount+'</p><p>Price:'+price+'</p><p>Discrption:'+discrption+'</p><p>Photo: <img class="1" height="250px" width="250px"/> </p></td></tr>');
+				  
+					$( ".1" ).each(function(){ $(this).attr("src",imgurl); $(this).attr("class",docRef.id);});
+					
+					 
+					}
+					if(amount==1)
+					{
+					$('#output').append('<tr class="border_bottom" id="Tr" style=" background-color:#ecfc03; display:flex;justify-content:space-between;" ><td><p>Successfully added to products</p><p>Name:'+name+'</p><p>Amount:'+amount+'</p><p>Price:'+price+'</p><p>Discrption:'+discrption+'</p><p>Photo: <img class="2" height="250px" width="250px"/> </p></td></tr>');
+					
+					$( ".2" ).each(function(){ $(this).attr("src",imgurl); $(this).attr("class",docRef.id);});
+					}
+					
+					if(amount>1)
+					{
+					$('#output').append('<tr class="border_bottom" id="Tr" style=" background-color:#03fc0f; display:flex;justify-content:space-between;" ><td><p>Successfully added to products</p><p>Name:'+name+'</p><p>Amount:'+amount+'</p><p>Price:'+price+'</p><p>Discrption:'+discrption+'</p><p>Photo: <img class="3" height="250px" width="250px"/> </p></td></tr>');
+			      
+					$( ".3" ).each(function(){ $(this).attr("src",imgurl); $(this).attr("class",docRef.id);});
+				  }
+				   uploader.value=0;
+                })
+                .catch(function(error) {
+                    console.error("Error writing document: ", error);
+                });
+				
+				
+				
+				});	
+				
+               
+					
+			}
+			);
+                 
+			  
+              
+		
+                     		
+      
+		 }
+               
+           
+           
+		   else
+		   {
+		   if(!PE)
+		   {
+		     $('#errorname5').show();
+		   }
+		   if(!PINT)
+		   {
+		   $('#errorname52').show();
+		   }
+		   if(file==null)
+		   {
+		    $('#errorname4').show();
+			}
+		          if(!ANB)
+		            {
+		      $('#errorname22').show();//show the error message
+		             }
+		       if(!NB)
+			   {
+		     $('#errorname1').show();//show the error message
+			  }
+			  if(!AB)
+			   {
+		      $('#errorname2').show();//show the error message
+			  }
+			  if(!DB)
+			   {
+		      $('#errorname3').show();//show the error message
+			  }
+		  
+		   }
+            $('form')[0].reset();
+           return false;    // prevent form default action
+        });
+      
+   });   
+   
+   
+			 
+			
+   
+  
+      
+   
+  </script>
+
+</body>
+
+</html>

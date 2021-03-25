@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Manager page</title>
+ <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.18.0/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.18.0/firebase-auth.js"></script>
+	<script defer="" src="/__/firebase/7.14.4/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+
+     
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/simple-sidebar.css" rel="stylesheet">
+  
+ 
+ 
+</head>
+
+<body style="display:none;">
+
+  <div class="d-flex" id="wrapper" >
+
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+      <div class="sidebar-heading" id="WelcomeDiv"></div>
+      <div class="list-group list-group-flush">
+     
+        <a href="https://finalp-e1b6b.web.app/man/ShowProducts.html" class="list-group-item list-group-item-action bg-light">Products</a>
+        <a href="https://finalp-e1b6b.web.app/man/orders.html" class="list-group-item list-group-item-action bg-light">Orders</a>
+       
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="https://finalp-e1b6b.web.app">Home</a>
+            </li>
+			 <li class="nav-item active">
+              <a class="dropdown-item" href="https://finalp-e1b6b.web.app/man/singout.html">Sing out</a>
+            </li>
+          
+          </ul>
+        </div>
+      </nav>
+
+      <div class="container-fluid">
+        <h1 class="mt-4">Dashboard</h1>
+        <p id="products"></p>
+        <p id="orders"></p>
+		<p id="products0"></p>
+		<p id="products1"></p>
+      </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+   <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Menu Toggle Script -->
+  <script>
+  
+   document.addEventListener('DOMContentLoaded', function() {
+    $("#menu-toggle").click(function(e) {e.preventDefault(); $("#wrapper").toggleClass("toggled"); });
+      
+     firebase.auth().onAuthStateChanged(function(user) {
+	 console.log("onAuthStateChanged");
+       if (user==null) {
+	   window.location.href ="https://finalp-e1b6b.web.app/man/index.html"
+	   }
+	   else
+	   {
+	    $('#WelcomeDiv').text("Hello "+user.displayName);
+		$('body').show();
+		
+	   }
+	   });
+	   const db = firebase.firestore();
+          db.collection("products").get().then(function(querySnapshot) {
+		   if(querySnapshot.size==0)//if the database is empty
+		   {
+		       $('#products').text("You products list is empty");
+		   }
+		   else
+		   {
+		   $('#products').text("You have "+querySnapshot.size+" products");
+		     let c=0,cc=0;
+		    querySnapshot.forEach(function(doc) {  
+			      if(doc.data().amount==0) c++;
+					if(doc.data().amount==1) cc++;
+			});
+			if(c>0)
+			$('#products0').text("You have "+c+" products with amount 0");
+			if(cc>0)
+			$('#products1').text("You have " +cc+" products with amount 1");
+		   }
+		  
+		  });
+	  
+	 db.collection("orders").get().then(function(querySnapshot) {
+	             if(querySnapshot.size==0)//if the database is empty
+		             {
+		       $('#orders').text("You have no orders :(");
+		              }
+					  else
+					  {
+					  $('#orders').text("You have "+querySnapshot.size+" new orders");
+					  }
+	 });
+});
+   
+      
+      
+   
+  </script>
+
+ 
+
+</body>
+
+
+</html>

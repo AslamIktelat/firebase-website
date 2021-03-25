@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Update products</title>
+   <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.18.0/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.18.0/firebase-auth.js"></script>
+	<script defer="" src="/__/firebase/7.14.4/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/7.18.0/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+   
+ 
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/simple-sidebar.css" rel="stylesheet">
+
+</head>
+<style>
+
+	table
+	{
+	margin:20px 0px 20px;
+	border-radius: 5px;
+	}
+	table td {
+	margin:5px;
+    word-break: break-all;
+}
+table tr{ 
+margin:5px;
+border-radius: 5px;
+}
+button
+{
+margin:5px;
+padding:5px;
+}
+input[type=text] {
+size="4"; maxlength="4";
+
+}
+</style>
+
+<body style="display:none;">
+
+  <div class="d-flex" id="wrapper">
+
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+       <div class="sidebar-heading" id="WelcomeDiv"></div>
+      <div class="list-group list-group-flush">
+        <a href="https://finalp-e1b6b.web.app/man/ManPage.html" class="list-group-item list-group-item-action bg-light">Dashboard</a>
+		  <a href="https://finalp-e1b6b.web.app/man/ShowProducts.html" class="list-group-item list-group-item-action bg-light">Show all the products</a>
+        <a href="https://finalp-e1b6b.web.app/man/AddProducts.html" class="list-group-item list-group-item-action bg-light">Add product</a>
+       
+		
+       
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="https://finalp-e1b6b.web.app">Home</a>
+            </li>
+			<li class="nav-item active">
+              <a class="dropdown-item" href="https://finalp-e1b6b.web.app/man/singout.html">Sing out</a>
+            </li>
+            
+          </ul>
+        </div>
+      </nav>
+
+      <div class="container-fluid">
+	   <div class="row">
+	    <div class="col-sm">
+		</div>
+	   <div class="col-sm">
+	   
+	   </div>
+	   <div class="col-sm">
+		</div>
+	   </div>
+	   
+	  <div class="row">
+	  <div class="col-sm">
+		</div>
+	<div class="col-md-auto">
+        <table style=" width:100%; display: flex; flex-direction:column; margin:20px 0px 20px; " id="output">   <!-- in this table we print the products -->
+        </table>
+		</div>
+		<div class="col-sm">
+		</div>
+		</div>
+      </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Menu Toggle Script -->
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    $("#menu-toggle").click(function(e) {e.preventDefault(); $("#wrapper").toggleClass("toggled"); });
+     
+	
+        firebase.auth().onAuthStateChanged(function(user) {
+       if (user==null) {
+	   window.location.href ="https://finalp-e1b6b.web.app/man/index.html"
+	   }
+	    else
+	   {
+	    $('#WelcomeDiv').text("Hello "+user.displayName);
+		$('body').show();
+	   }
+	   });
+	   //if we here then there is a user who singed in
+	    const db = firebase.firestore();
+       display(db);//call the function
+   });   
+   
+   
+   function display(db)//function display
+	  {
+	  	  
+	    $('#output').empty();//output is the table - we call the function empty so we dont add new info to old info
+	     db.collection("products").get().then(function(querySnapshot) {
+		   if(querySnapshot.size==0)//if the database is empty
+		   {
+		       $('#output').append("<h2>Your list is empty...</h2>");
+			    db.collection("photoname").get().then(function(querySnapshot) {  querySnapshot.forEach(function(document) { db.collection("photoname").doc(document.id).update({"name":1}); }); });
+		   }
+		   else{
+		   
+            querySnapshot.forEach(function(doc) {                                       //doc.data().TheNameOfTheFiled   <input type="text" id="name" class name="name" value= required>
+			
+			
+                 	if(doc.data().amount==0)
+					{
+					
+                    $('#output').append('<tr class="1" id="Tr" style=" background-color:#ff6666; display:flex;justify-content:space-between;" ><td><p>Name:'+doc.data().name+'</p><p>Amount:<input type="text" size="4" maxlength="4" id="amount" class="1amount" value='+doc.data().amount+'><button class="1 btn btn-primary" id="update" onclick="UpdatePro(this.id)">Update</button> </p><p>Price:'+doc.data().price+'</p><p>Discrption:'+doc.data().discrption+'</p><p>Photo: <img src='+doc.data().img+' height="250px" width="250px"/> </p><p style="text-align: center;"><button style="text-align: center;" class="1 btn btn-primary" id="delete" onclick="DeletePro(this.id)">Delete</button></p></td></tr>');
+					$( ".1.btn.btn-primary" ).each(function(){ $(this).attr("class","btn btn-primary"); $(this).attr("id",doc.id);});
+					$( ".1amount" ).each(function(){ $(this).attr("class","NewAmount"); $(this).attr("id",doc.id);});
+					$( ".1" ).attr("class",doc.id);
+					}
+					if(doc.data().amount==1)
+					{
+					$('#output').append('<tr class="2" id="Tr" style=" background-color:#ecfc03; display:flex;justify-content:space-between;" ><td><p>Name:'+doc.data().name+'</p><p>Amount:<input type="text" size="4" maxlength="4" id="amount" class="2amount" value='+doc.data().amount+'><button class="2 btn btn-primary" id="update" onclick="UpdatePro(this.id)">Update</button> </p><p>Price:'+doc.data().price+'</p><p>Discrption:'+doc.data().discrption+'</p><p>Photo: <img src='+doc.data().img+' height="250px" width="250px"/> </p><p style="text-align: center;"><button style="text-align: center;" class="2 btn btn-primary" id="delete" onclick="DeletePro(this.id)">Delete</button></p></td></tr>');
+					 $( ".2.btn.btn-primary" ).each(function(){ $(this).attr("class","btn btn-primary"); $(this).attr("id",doc.id);});
+					$( ".2amount" ).each(function(){ $(this).attr("class","NewAmount"); $(this).attr("id",doc.id);});
+					$( ".2" ).attr("class",doc.id);
+					}
+					
+					if(doc.data().amount>1)
+					{
+					$('#output').append('<tr class="3" id="Tr" style=" background-color:#03fc0f; display:flex;justify-content:space-between;" ><td><p>Name:'+doc.data().name+'</p><p>Amount:<input type="text" size="4" maxlength="4" id="amount" class="3amount" value='+doc.data().amount+'><button class="3 btn btn-primary" id="update" onclick="UpdatePro(this.id)">Update</button> </p><p>Price:'+doc.data().price+'</p><p>Discrption:'+doc.data().discrption+'</p><p>Photo: <img src='+doc.data().img+'  height="250px" width="250px"/> </p><p style="text-align: center;"><button class="3 btn btn-primary" style="text-align: center;" id="delete" onclick="DeletePro(this.id)">Delete</button></p></td></tr>');
+                       $( ".3.btn.btn-primary" ).each(function(){ $(this).attr("class","btn btn-primary"); $(this).attr("id",doc.id);});
+					   $( ".3amount" ).each(function(){ $(this).attr("class","NewAmount"); $(this).attr("id",doc.id);});
+					$( ".3" ).attr("class",doc.id);
+				  }
+
+            });
+			}//End of else
+        });
+		
+	  }//End of display
+	  function UpdatePro(id)
+	  {
+	     var NewAmount;
+	  $('.NewAmount').each(function(){ var v=$(this).attr('id'); if(v==id) {NewAmount=$(this).val();} });
+	        var E=true;
+			var I=true;
+			var N=true;
+	      if(NewAmount.length<1){ E=false; alert("Amount is empty"); return false;}// amount is empty
+		  if(!Number.isInteger(+NewAmount)){ANB=false; alert("Amount is only numbers");return false;}//amount not int
+		  if(NewAmount<0){N=false; alert("Amount canot be negative");return false;}//amount -
+		  $('.'+id).each(function(){ var v=$(this).attr('id'); if(v=="Tr") {
+		  if(NewAmount==0)
+		  {
+		    $(this).css("background-color","#ff6666");
+		  }
+		  if(NewAmount==1)
+		  {
+		  $(this).css("background-color","#ecfc03");
+		  }
+		  if(NewAmount>1)
+		  {
+		  $(this).css("background-color","#03fc0f");
+		  }
+		  } });
+		  if(E && I && N)//update
+		  {
+		    var db1 = firebase.firestore();
+	      var todelete=db1.collection("products").doc(id).update({"amount":NewAmount}).then(function() {
+    alert("Document successfully update!");
+}).catch(function(error) {
+    console.error("Error updating document: ", error);
+});
+		  }
+		   
+	  
+	  }
+	  function DeletePro(id)
+	     {
+		 //delete the photo first by the url that savid in "img" filed then deelte the ducment
+		  var dbd=firebase.firestore();
+		dbd.collection("products").doc(id).get().then(function(doc){
+		url=doc.data().img;
+		var gsReference = firebase.storage().refFromURL(url);
+		gsReference.delete().then(function() { console.log("File deleted successfully!");}).catch(function(error) {console.error("Error deleteding File: ", error);});
+		}).then(function(){
+		
+		 dbd.collection("products").doc(id).delete().then(function() {
+    console.log("Document successfully deleted!"); 
+	display(dbd);
+     }).catch(function(error) {
+    console.error("Error removing document: ", error);
+    });
+		
+		});
+	  //delete product from the database by its id
+	
+	 
+
+	  }//End of DeletePro
+      
+   
+  </script>
+
+</body>
+
+</html>
